@@ -1,21 +1,66 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
+import React, { useRef } from 'react';
+import {
+  Animated,
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
 export default function App() {
+  const fade = useRef(new Animated.Value(0)).current;
+  const fadeOut = () => {
+    Animated.timing(fade, {
+      toValue: 1,
+      duration: 100,
+      useNativeDriver: true,
+    }).start(() => {
+      Animated.timing(fade, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <Animated.View
+        style={[
+          styles.fadingContainer,
+          {
+            opacity: fade,
+          },
+        ]}
+      >
+        <Text style={styles.fadingText}>저장 완료!</Text>
+      </Animated.View>
+      <View style={styles.buttonRow}>
+        <TouchableOpacity onPress={fadeOut}>
+          <AntDesign name="download" color="black" size={30} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 11,
+  },
+  fadingContainer: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: 'lightgray',
+  },
+  fadingText: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 20,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    marginVertical: 16,
   },
 });
